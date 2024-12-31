@@ -160,21 +160,21 @@ typedef TF_Result (*TF_Listener_Timeout)(TinyFrame *tf);
 
 // ---------------------------------- INIT ------------------------------
 
-/**
- * Initialize the TinyFrame engine.
- * This can also be used to completely reset it (removing all listeners etc).
- *
- * The field .userdata (or .usertag) can be used to identify different instances
- * in the TF_WriteImpl() function etc. Set this field after the init.
- *
- * This function is a wrapper around TF_InitStatic that calls malloc() to obtain
- * the instance.
- *
- * @param tf - instance
- * @param peer_bit - peer bit to use for self
- * @return TF instance or NULL
- */
-TinyFrame *TF_Init(TF_Peer peer_bit);
+// /**
+//  * Initialize the TinyFrame engine.
+//  * This can also be used to completely reset it (removing all listeners etc).
+//  *
+//  * The field .userdata (or .usertag) can be used to identify different instances
+//  * in the TF_WriteImpl() function etc. Set this field after the init.
+//  *
+//  * This function is a wrapper around TF_InitStatic that calls malloc() to obtain
+//  * the instance.
+//  *
+//  * @param tf - instance
+//  * @param peer_bit - peer bit to use for self
+//  * @return TF instance or NULL
+//  */
+// TinyFrame *TF_Init(TF_Peer peer_bit);
 
 
 /**
@@ -188,12 +188,12 @@ TinyFrame *TF_Init(TF_Peer peer_bit);
  */
 bool TF_InitStatic(TinyFrame *tf, TF_Peer peer_bit);
 
-/**
- * De-init the dynamically allocated TF instance
- *
- * @param tf - instance
- */
-void TF_DeInit(TinyFrame *tf);
+// /**
+//  * De-init the dynamically allocated TF instance
+//  *
+//  * @param tf - instance
+//  */
+// void TF_DeInit(TinyFrame *tf);
 
 
 // ---------------------------------- API CALLS --------------------------------------
