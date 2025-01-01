@@ -254,6 +254,18 @@ bool _TF_FN TF_InitStatic(TinyFrame *tf, TF_Peer peer_bit)
 //endregion Init
 
 
+TF_ID _TF_FN TF_GetId(TinyFrame *tf)
+{
+    TF_ID id = 0;
+    id = (TF_ID) (tf->next_id & TF_ID_MASK);
+    if (tf->peer_bit) {
+        id |= TF_ID_PEERBIT;
+    }
+
+    return id;
+}
+
+
 //region Listeners
 
 /** Reset ID listener's timeout to the original value */
@@ -389,6 +401,22 @@ bool _TF_FN TF_RemoveIdListener(TinyFrame *tf, TF_ID frame_id)
     return false;
 }
 
+/** Remove a ID listener by its frame ID. Returns 1 on success. */
+bool _TF_FN TF_RemoveAllIdListener(TinyFrame *tf)
+{
+    TF_COUNT i;
+    struct TF_IdListener_ *lst;
+    for (i = 0; i < tf->count_id_lst; i++) {
+        lst = &tf->id_listeners[i];
+        // test if live & matching
+        if (lst->fn != NULL) {
+            cleanup_id_listener(tf, i, lst);            
+        }
+    }
+
+    return true;
+}
+
 /** Remove a type listener by its type. Returns 1 on success. */
 bool _TF_FN TF_RemoveTypeListener(TinyFrame *tf, TF_TYPE type)
 {
@@ -407,6 +435,22 @@ bool _TF_FN TF_RemoveTypeListener(TinyFrame *tf, TF_TYPE type)
     return false;
 }
 
+/** Remove a type listener by its type. Returns 1 on success. */
+bool _TF_FN TF_RemoveAllTypeListener(TinyFrame *tf)
+{
+    TF_COUNT i;
+    struct TF_TypeListener_ *lst;
+    for (i = 0; i < tf->count_type_lst; i++) {
+        lst = &tf->type_listeners[i];
+        // test if live & matching
+        if (lst->fn != NULL  ) {
+            cleanup_type_listener(tf, i, lst);
+        }
+    }
+
+    return true;
+}
+
 /** Remove a generic listener by its function pointer. Returns 1 on success. */
 bool _TF_FN TF_RemoveGenericListener(TinyFrame *tf, TF_Listener cb)
 {
@@ -423,6 +467,20 @@ bool _TF_FN TF_RemoveGenericListener(TinyFrame *tf, TF_Listener cb)
 
     TF_Error("Generic listener to remove not found");
     return false;
+}
+
+/** 移除所有通用监听器 */
+bool _TF_FN TF_RemoveAllGenericListener(TinyFrame *tf)
+{
+    TF_COUNT i;
+    struct TF_GenericListener_ *lst;
+    for (i = 0; i < tf->count_generic_lst; i++) {
+        lst = &tf->generic_listeners[i];
+        if (lst->fn != 0) {
+            cleanup_generic_listener(tf, i, lst);            
+        }
+    }
+    return true;
 }
 
 /** Handle a message that was just collected & verified by the parser */
