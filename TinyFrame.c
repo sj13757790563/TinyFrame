@@ -483,6 +483,17 @@ bool _TF_FN TF_RemoveAllGenericListener(TinyFrame *tf)
     return true;
 }
 
+
+/** 移除所有监听器 */
+bool _TF_FN TF_RemoveAllListener(TinyFrame *tf)
+{
+    TF_RemoveAllIdListener(tf);
+    TF_RemoveAllTypeListener(tf);
+    TF_RemoveAllGenericListener(tf);
+    return true;
+}
+
+
 /** Handle a message that was just collected & verified by the parser */
 static void _TF_FN TF_HandleReceivedMessage(TinyFrame *tf)
 {

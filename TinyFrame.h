@@ -307,6 +307,8 @@ bool TF_RemoveGenericListener(TinyFrame *tf, TF_Listener cb);
 
 bool TF_RemoveAllGenericListener(TinyFrame *tf);
 
+bool TF_RemoveAllListener(TinyFrame *tf);
+
 /**
  * Renew an ID listener timeout externally (as opposed to by returning TF_RENEW from the ID listener)
  *
