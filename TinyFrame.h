@@ -151,6 +151,7 @@ typedef TF_Result (*TF_Listener)(TinyFrame *tf, TF_Msg *msg);
 
 /**
  * TinyFrame Type Listener callback
+ * 这个回调函数是在中断中调用的，所以不能在这个函数中调用阻塞函数
  *
  * @param tf - instance
  * @param msg - the received message, userdata is populated inside the object
@@ -160,21 +161,21 @@ typedef TF_Result (*TF_Listener_Timeout)(TinyFrame *tf);
 
 // ---------------------------------- INIT ------------------------------
 
-/**
- * Initialize the TinyFrame engine.
- * This can also be used to completely reset it (removing all listeners etc).
- *
- * The field .userdata (or .usertag) can be used to identify different instances
- * in the TF_WriteImpl() function etc. Set this field after the init.
- *
- * This function is a wrapper around TF_InitStatic that calls malloc() to obtain
- * the instance.
- *
- * @param tf - instance
- * @param peer_bit - peer bit to use for self
- * @return TF instance or NULL
- */
-TinyFrame *TF_Init(TF_Peer peer_bit);
+// /**
+//  * Initialize the TinyFrame engine.
+//  * This can also be used to completely reset it (removing all listeners etc).
+//  *
+//  * The field .userdata (or .usertag) can be used to identify different instances
+//  * in the TF_WriteImpl() function etc. Set this field after the init.
+//  *
+//  * This function is a wrapper around TF_InitStatic that calls malloc() to obtain
+//  * the instance.
+//  *
+//  * @param tf - instance
+//  * @param peer_bit - peer bit to use for self
+//  * @return TF instance or NULL
+//  */
+// TinyFrame *TF_Init(TF_Peer peer_bit);
 
 
 /**
@@ -188,12 +189,15 @@ TinyFrame *TF_Init(TF_Peer peer_bit);
  */
 bool TF_InitStatic(TinyFrame *tf, TF_Peer peer_bit);
 
-/**
- * De-init the dynamically allocated TF instance
- *
- * @param tf - instance
- */
-void TF_DeInit(TinyFrame *tf);
+// /**
+//  * De-init the dynamically allocated TF instance
+//  *
+//  * @param tf - instance
+//  */
+// void TF_DeInit(TinyFrame *tf);
+
+
+TF_ID TF_GetId(TinyFrame *tf);
 
 
 // ---------------------------------- API CALLS --------------------------------------
@@ -236,6 +240,9 @@ void TF_Tick(TinyFrame *tf);
 void TF_ResetParser(TinyFrame *tf);
 
 
+void TF_main_loop(TinyFrame *tf);
+
+
 // ---------------------------- MESSAGE LISTENERS -------------------------------
 
 /**
@@ -258,6 +265,8 @@ bool TF_AddIdListener(TinyFrame *tf, TF_Msg *msg, TF_Listener cb, TF_Listener_Ti
  */
 bool TF_RemoveIdListener(TinyFrame *tf, TF_ID frame_id);
 
+bool TF_RemoveAllIdListener(TinyFrame *tf);
+
 /**
  * Register a frame type listener.
  *
@@ -276,6 +285,9 @@ bool TF_AddTypeListener(TinyFrame *tf, TF_TYPE frame_type, TF_Listener cb);
  */
 bool TF_RemoveTypeListener(TinyFrame *tf, TF_TYPE type);
 
+bool TF_RemoveAllTypeListener(TinyFrame *tf);
+
+
 /**
  * Register a generic listener.
  *
@@ -292,6 +304,10 @@ bool TF_AddGenericListener(TinyFrame *tf, TF_Listener cb);
  * @param cb - callback function to remove
  */
 bool TF_RemoveGenericListener(TinyFrame *tf, TF_Listener cb);
+
+bool TF_RemoveAllGenericListener(TinyFrame *tf);
+
+bool TF_RemoveAllListener(TinyFrame *tf);
 
 /**
  * Renew an ID listener timeout externally (as opposed to by returning TF_RENEW from the ID listener)
@@ -443,12 +459,12 @@ struct TinyFrame_ {
 
     /* Own state */
     TF_Peer peer_bit;       //!< Own peer bit (unqiue to avoid msg ID clash)
-    TF_ID next_id;          //!< Next frame / frame chain ID
+    TF_ID next_id;          //!< Next frame / frame chain ID / 下一个数据包的ID
 
     /* Parser state */
     enum TF_State_ state;
     TF_TICKS parser_timeout_ticks;
-    TF_ID id;               //!< Incoming packet ID
+    TF_ID id;               //!< Incoming packet ID/接收到的数据包的ID
     TF_LEN len;             //!< Payload length
     uint8_t data[TF_MAX_PAYLOAD_RX]; //!< Data byte buffer
     TF_LEN rxi;             //!< Field size byte counter

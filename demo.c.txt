@@ -1,0 +1,32 @@
+
+#include "TinyFrame.h"
+
+
+static TinyFrame h_mg_tf;
+
+void main(void)
+{
+    //硬件初始化
+    ...
+
+
+    //初始化TinyFrame
+    TF_InitStatic(&h_mg_tf, TF_MASTER);
+
+    while (1)
+    {
+        
+        if (串口有数据)
+        {            
+            //处理TinyFrame数据
+            TF_Accept(&h_mg_tf, data, len);
+        }  
+
+
+        if (发送数据)
+        {
+            TF_SendSimple(&h_mg_tf, type, data, len);
+        }  
+    }  
+
+}
