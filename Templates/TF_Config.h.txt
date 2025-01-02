@@ -25,7 +25,7 @@
 // !!! BOTH PEERS MUST USE THE SAME SETTINGS !!!
 
 // Adjust sizes as desired (1,2,4)
-#define TF_ID_BYTES     1
+#define TF_ID_BYTES     2
 #define TF_LEN_BYTES    2
 #define TF_TYPE_BYTES   1
 
@@ -33,7 +33,7 @@
 //   TF_CKSUM_NONE, TF_CKSUM_XOR, TF_CKSUM_CRC8, TF_CKSUM_CRC16, TF_CKSUM_CRC32
 //   TF_CKSUM_CUSTOM8, TF_CKSUM_CUSTOM16, TF_CKSUM_CUSTOM32
 // Custom checksums require you to implement checksum functions (see TinyFrame.h)
-#define TF_CKSUM_TYPE TF_CKSUM_CRC16
+#define TF_CKSUM_TYPE TF_CKSUM_CUSTOM8
 
 // Use a SOF byte to mark the start of a frame
 #define TF_USE_SOF_BYTE 1
@@ -74,7 +74,7 @@ typedef uint8_t TF_COUNT;
 #define TF_USE_MUTEX  1
 
 // Error reporting function. To disable debug, change to empty define
-#define TF_Error(format, ...) printf("[TF] " format "\n", ##__VA_ARGS__)
+#define TF_Error(format, ...) 
 
 //------------------------- End of user config ------------------------------
 

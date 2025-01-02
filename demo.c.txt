@@ -30,3 +30,11 @@ void main(void)
     }  
 
 }
+
+
+
+//系统1ms 滴答中断
+void sys_1ms_int(void)
+{
+    TF_Tick(&h_mg_tf);
+}
